@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File system</title>
+    <link rel="stylesheet" href="bootstrap-4.0.0-beta-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="style.css">
+    <!--<script src="main.js"></script>-->
+</head>
+<body>
+<div id="head" class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-3">File system resources</h1>
+        <div class="row">
+			<div class="col-8">
+				<p class="lead">Represented as a list of file units with thier properties.</p>
+			</div>
+			<div class="col-4">
+				<button id="drawTree" type="button" class="btn btn-primary btn-lg" onclick="generateTree()">
+					Generate Tree
+				</button>
+			</div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div  class="row align-items-start justify-content-center">
+        <div id="resources" class="col-4">
+            <div class="resource">
+                <h2 class="lead list-group-item list-group-item-primary">Images</h2>
+                <ul class="list-unstyled pl-3 list-group-item ">
+                    <li ><strong>Type: </strong>D</li>
+                    <li><strong>Size: </strong>-</li>
+                    <li><strong>Location: </strong>Data</li>
+                </ul>
+            </div>
+            <div class="resource">
+                <h2 class="lead list-group-item list-group-item-primary">Img.png</h2>
+                <ul class="list-unstyled pl-3 list-group-item ">
+                    <li><strong>Type: </strong>F</li>
+                    <li><strong>Size: </strong>15479</li>
+                    <li><strong>Location: </strong>Images</li>
+                </ul>
+            </div>
+            <div class="resource">
+                <h2 class="lead list-group-item list-group-item-primary">Backups</h2>
+                <ul class="list-unstyled pl-3 list-group-item ">
+                    <li><strong>Type: </strong>D</li>
+                    <li><strong>Size: </strong>-</li>
+                    <li><strong>Location: </strong>ROOT</li>
+                </ul>
+            </div>
+            <div class="resource">
+                <h2 class="lead list-group-item list-group-item-primary">Data</h2>
+                <ul class="list-unstyled pl-3 list-group-item ">
+                    <li><strong>Type: </strong>D</li>
+                    <li><strong>Size: </strong>-</li>
+                    <li><strong>Location: </strong>ROOT</li>
+                </ul>
+            </div>
+            <div class="resource">
+                <h2 class="lead list-group-item list-group-item-primary">Videos</h2>
+                <ul class="list-unstyled pl-3 list-group-item ">
+                    <li><strong>Type: </strong>D</li>
+                    <li><strong>Size: </strong>-</li>
+                    <li><strong>Location: </strong>Data</li>
+                </ul>
+            </div>
+        </div>
+        <div id="tree" class="col-6">
+            <span class="header">ROOT</span>
+            <div class="tree-wrapper">
+                <div class="tree-hierarchy-line"></div>
+                <ul class="tree">
+                    <li>
+                        <span class="tree-connector-line"></span>
+                        <span class="header">Data</span>
+                        <div class="tree-wrapper">
+                            <div class="tree-hierarchy-line"></div>
+                            <ul class="tree" >
+                                <li>
+                                    <span class="tree-connector-line"></span>
+                                    <span  class="header">Images</span>
+                                    <div class="tree-wrapper">
+                                        <div class="tree-hierarchy-line"></div>
+                                        <ul class="tree">
+                                            <li>
+                                                <span class="tree-connector-line"></span>
+                                                <span class="file-header">img.png <span class="size">[15Kb]</span></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="tree-connector-line"></span>
+                                    <span  class="header">Videos</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="tree-connector-line"></span>
+                        <span class="header">Backups</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
