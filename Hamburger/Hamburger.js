@@ -119,12 +119,15 @@ var SIZES = [Hamburger.SIZE_SMALL, Hamburger.SIZE_LARGE]; //Размеры
 
 // Начинки в ассортименте |
 var STUFFINGS = [Hamburger.STUFFING_CHEESE, Hamburger.STUFFING_CHICKEN, Hamburger.STUFFING_POTATO, Hamburger.STUFFING_SALAD, Hamburger.STUFFING_ONION, Hamburger.STUFFING_PAPRICA];
-
-
+var STUFFING_NAMES = STUFFINGS.map((item) => {
+    return item.name;
+});
 
 // Топпинги в ассортименте 
 var TOPPINGS = [Hamburger.TOPPING_MAYO, Hamburger.TOPPING_SPICE, Hamburger.TOPPING_KETCHUP, Hamburger.TOPPING_SOURCREAM, Hamburger.TOPPING_TOMATO];
-
+var TOPPING_NAMES = TOPPINGS.map((item) => {
+    return item.name;
+});
 ///////сайт
 var hamburger;
 
@@ -154,7 +157,7 @@ hamburger = new Hamburger(Hamburger.SIZE_LARGE, Hamburger.NO_STUFFING);
 // var btns = btntds.getElementsByTagName('button');
 // var btn = btns[0];
 
-var removeTableChild = function(e) {
+var removeChild = function(e) {
     var tr = e.currentTarget.parentNode.parentNode;
     var thisTbody = tr.parentNode;
     thisTbody.removeChild(tr);
@@ -192,80 +195,53 @@ var addClone = function() {
 var DROPDOWN_MENU = document.getElementsByClassName("dropdown-menu");
 var DROPDOWN_MENU_TOPPING = DROPDOWN_MENU[0];
 var DROPDOWN_MENU_STUFFING = DROPDOWN_MENU[1];
-var tbodys = document.getElementsByName('tbody');
 
 var dropDownClick = function(e) {
-    var strTopping = TABLE_TOPPING.getElementsByTagName('tbody');
-    var strStuffing = TABLE_STUFFING.getElementsByTagName('tbody');
-    for (var i = 0; i < TOPPINGS.length; i++) {
-        if (e.target.textContent === TOPPINGS[i].name && hamburger.toppingNames.indexOf(e.target.textContent) < 0) {
-            hamburger.addTopping(TOPPINGS[i]);
-            var n = hamburger.topping.length;
-            
-            TD[0].textContent = n;
-            TD[1].textContent = TOPPINGS[i].name;
-            TD[2].textContent = TOPPINGS[i].Price;
-            TD[3].firstElementChild.addEventListener('click', removeTableChild, true);
+    addElementToTable(e.target);
 
-            strTopping[0].appendChild(TR_ELEMENT_TABLE_CLONE);
-
-            //n++;
-        } else if (e.target.textContent === TOPPINGS[i].name && hamburger.toppingNames.indexOf(e.target.textContent) !== -1) {
-            alert("Нельзя добавлять более 5 топпингов и нельзя добавлять топпинг если такой уже есть !!!");
-        }
-    }
-
-    for (var i = 0; i < STUFFINGS.length; i++) {
-        if (e.target.textContent === STUFFINGS[i].name && hamburger.stuffingNames.indexOf(e.target.textContent) < 0 && hamburger.stuffing.length < 5) {
-            hamburger.addStuffing(STUFFINGS[i]);
-            var n = hamburger.stuffing.length;
-            TD[0].textContent = n;
-            TD[1].textContent = STUFFINGS[i].name;
-            TD[2].textContent = STUFFINGS[i].Price;
-            TD[3].firstElementChild.addEventListener('click', removeTableChild, true);
-
-            strStuffing[0].appendChild(TR_ELEMENT_TABLE_CLONE);
-            //n++;
-        } else if (e.target.textContent === STUFFINGS[i].name && hamburger.stuffingNames.indexOf(e.target.textContent) > 0 || e.target.textContent === STUFFINGS[i].name && hamburger.stuffing.length === 5) {
-            alert("Нельзя добавлять более 5 начинок и нельзя добавлять начинку если такая уже есть !!!");
-        }
-    }
     setInfo();
     addClone();
     countChange();
 };
 
-function addElementToTable(substancesName, el){
+function addElementToTable(el) {
+    var warnMsg = "Нельзя добавлять более 5 добавок и нельзя добавлять добавку если такая уже есть !!!";
     var textContent = el.textContent;
-    var condition = true;
+    var toppingCondition = TOPPING_NAMES.indexOf(textContent) !== -1 && hamburger.toppingNames.indexOf(textContent) === -1;
+    var stuffingCondition = STUFFING_NAMES.indexOf(textContent) !== -1 && hamburger.stuffingNames.indexOf(textContent) === -1;
+    var condition;
     var substances;
-    if (substancesName === "STUFFINGS") {
-        substances = STUFFINGS;
-        condition = textContent === STUFFINGS[i].name && hamburger.stuffingNames.indexOf(textContent) < 0 && hamburger.stuffing.length < 5;
-        var strStuffing = TABLE_STUFFING.getElementsByTagName('tbody');
-        hamburger.addStuffing(STUFFINGS[i])
-    }else if(substancesName === "TOPPINGS"){
+    var strSubstannce;
+    if (toppingCondition) {
+        condition = toppingCondition;
         substances = TOPPINGS;
-        condition = textContent === TOPPINGS[i].name && hamburger.toppingNames.indexOf(textContent) < 0;
-        var strTopping = TABLE_TOPPING.getElementsByTagName('tbody');
-        hamburger.addTopping(TOPPINGS[i]);
+        strSubstannce = TABLE_TOPPING.getElementsByTagName('tbody');
+    } else if (stuffingCondition) {
+        condition = stuffingCondition;
+        substances = STUFFINGS;
+        strSubstannce = TABLE_STUFFING.getElementsByTagName('tbody');
+    }
+    if (condition) {
+        substances.forEach((item) => {
+            if (stuffingCondition && item.name === textContent) {
+                hamburger.addStuffing(item);
+                TD[0].textContent = hamburger.stuffing.length;
+                TD[1].textContent = item.name;
+                TD[2].textContent = item.Price;
+                TD[3].firstElementChild.addEventListener('click', removeChild, true);
+            } else if (toppingCondition && item.name === textContent) {
+                hamburger.addTopping(item);
+                TD[0].textContent = hamburger.topping.length;
+                TD[1].textContent = item.name;
+                TD[2].textContent = item.Price;
+                TD[3].firstElementChild.addEventListener('click', removeChild, true);
+            }
+            strSubstannce[0].appendChild(TR_ELEMENT_TABLE_CLONE);
+        });
+    } else {
+        alert(warnMsg);
     }
 
-    substances.forEach((item) => {
-      if (condition) {
-        if (condition) {
-              if(substancesName === "STUFFINGS"){
-                if (condition) {
-                    
-                }
-                hamburger.addStuffing(item);
-              }else if(substancesName === "TOPPINGS"){
-                hamburger.addTopping(item);
-              }
-        }
-      }
-
-    });
 }
 
 var buttonLarge = document.getElementById("selectLargeSize");
@@ -292,19 +268,27 @@ var setInfo = function() {
     INFO_BLOCK2_DD[0].textContent = hamburger.calculatePrice();
 };
 
-var setAssortyments = function() {
-    for (var i = 0, len = TOPPINGS.length; i < len; i++) {
-        var child = document.createElement("li");
-        child.innerHTML = "<a href=\"#\">" + TOPPINGS[i].name + "</a>";
-        DROPDOWN_MENU_TOPPING.appendChild(child);
-    }
-
-    for (var i = 0, len = STUFFINGS.length; i < len; i++) {
-        var child = document.createElement("li");
-        child.innerHTML = "<a href=\"#\">" + STUFFINGS[i].name + "</a>";
-        DROPDOWN_MENU_STUFFING.appendChild(child);
-    }
+var setAssortyments = function(asorts) {
+    asorts.forEach((el) => {
+        setAssortiment(el);
+    });
 };
+
+function setAssortiment(substances) {
+    substances.forEach((el) => {
+        console.log(el);
+        var child = document.createElement("li");
+        child.innerHTML = "<a href=\"#\">" + el.name + "</a>";
+        console.log(el.name);
+        if (TOPPINGS.indexOf(el) !== -1) {
+            DROPDOWN_MENU_TOPPING.appendChild(child);
+        } else if (STUFFINGS.indexOf(el) !== -1) {
+            DROPDOWN_MENU_STUFFING.appendChild(child);
+        }
+    });
+}
+
+
 
 var setTotal = function(price) {
     var clone = trElement.cloneNode(true);
@@ -314,7 +298,7 @@ var setTotal = function(price) {
 var addEventForButtons = function() {
     var closeButtons = document.getElementsByClassName("btn btn-sm btn-danger");
     for (var i = 0; i < closeButtons.length; i++) {
-        closeButtons[i].addEventListener('click', removeTableChild, true);
+        closeButtons[i].addEventListener('click', removeChild, true);
     }
 };
 
@@ -387,14 +371,11 @@ var OpenCheck = function() {
 var countElement = document.getElementById("count");
 
 var countChange = function() {
-
-    var count;
     var count = countElement.value;
     var price = hamburger.calculatePrice();
 
     var totalEls = document.getElementsByClassName("col-xs-4 form-control-static text-center");
     var TotalEl = totalEls[0];
-    console.log("TotalEl: " + TotalEl);
     TotalEl.textContent = price * count;
 
 };
@@ -406,7 +387,8 @@ countElement.onchange = countChange;
 buttonBuyIt.onclick = OpenCheck;
 DROPDOWN_MENU_TOPPING.onclick = dropDownClick;
 DROPDOWN_MENU_STUFFING.onclick = dropDownClick;
-window.onload = setAssortyments;
+//window.onload = setAssortyments();
+window.onload = setAssortyments([TOPPINGS, STUFFINGS]);
 window.addEventListener('load', addEventForButtons, true);
 window.addEventListener('load', addClone, true);
 buttonLarge.onclick = clickMainButtons;
