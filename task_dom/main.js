@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(OBJS[61]);
 
     var container = document.getElementById('tree');
-    buildHtmlHirarchy(OBJS, "ROOT", container);
-    container.appendChild(root);
+    //buildHtmlHirarchy(OBJS, "ROOT", container);
+    generateTree(OBJS, "ROOT", container);
+    //container.appendChild(root);
     // var drawed = drawNodeForElement(OBJS[60]);
     //container.appendChild(drawed);
 
@@ -34,8 +35,13 @@ var CLASS_DIRECT_HEADER = "header";
 var UL_CLASS = "tree";
 var TYPES = { file: 'F', directory: 'D' };
 
-function generateTree() {
-    
+function generateTree(resourses, rootName, container) {
+    if (rootName == "ROOT") {
+        container.appendChild(drawNodeForElement(rootName));
+    }
+    var oldContainer = container;
+    container = buildHtmlHirarchy(resourses, rootName, oldContainer);
+
 }
 
 var Resurse = function(name, type, size, location) {
@@ -57,6 +63,7 @@ var Resurse = function(name, type, size, location) {
     }
 }
 
+
 function buildHtmlHirarchy(resourses, rootName, container) {
     var box = document.createElement("div");
     var filtred = resourses.filter(function(res) {
@@ -64,25 +71,23 @@ function buildHtmlHirarchy(resourses, rootName, container) {
     });
     var newResourses = deleteObjectsFromArray(resourses, filtred);
     console.log("filtred: ");
-    console.log(filtred[0]);
+    console.log(filtred);
     console.log(rootName);
-
-    filtred.forEach((res) => {
-        container.appendChild(drawNodeForElement(res));
-        container.appendChild(buildHtmlHirarchy(newResourses, res.name, container.getElementsByTagName('li')[0]));
+    if (filtred.length === 0) {
+        return container;
+    } else {
+        filtred.forEach((res) => {
+            container = container.appendChild(drawNodeForElement(res));
+            container = container.appendChild(buildHtmlHirarchy(newResourses, res.name, container.getElementsByTagName('li')[0]));
+        });
+    }
+    return container;
+}
+function finale(resourses, rootName){
+    var container;
+    var filtred = resourses.filter(function(res) {
+        return res.location === rootName;
     });
-    // var filtred = resourses.filter(function(res) {
-    //     return res.location === rootName;
-    // });
-    // var newResourses = deleteObjectsFromArray(resourses, filtred);
-    // console.log("filtred: ");
-    // console.log(filtred[0]);
-    // console.log(rootName);
-
-    // filtred.forEach((res) => {
-    //     container.appendChild(drawNodeForElement(res));
-    //     container.appendChild(buildHtmlHirarchy(newResourses, res.name, container.getElementsByTagName('li')[0]));
-    // });
 }
 
 
