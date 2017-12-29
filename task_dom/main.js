@@ -161,18 +161,6 @@ function drawNodeForElement(resourse) {
         container.appendChild(header);
     }
 
-    // liElement.appendChild(connectorLine);
-    // liElement.appendChild(header);
-
-
-    // ulElemennt.appendChild(liElement);
-
-    // container.appendChild(hirLineContainer);
-    // container.appendChild(ulElemennt);
-
-
-
-
     return container;
 }
 
