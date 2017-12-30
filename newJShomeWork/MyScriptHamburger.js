@@ -7,7 +7,7 @@ var Hamburger = function () {
         this.stuffings.push(stuffing);
 
         this.addStuffing = function (stuffing) {
-            if (this.stuffings.indexOf(stuffing) < 0 && this.stuffings.length < size.maxSize) {
+            if (this.stuffings.indexOf(stuffing) < 0 && this.stuffings.length <= size.maxSize) {
                 this.stuffings.push(stuffing);
             } else {
                 console.log('Нельзя добалять более "+ size.maxSize +" начинок и если такая уже есть!!!');

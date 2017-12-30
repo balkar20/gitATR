@@ -11,7 +11,7 @@ var Hamburger = function() {
 }();
 
 Hamburger.prototype.addStuffing = function (stuffing) {
-    if (this.stuffings.indexOf(stuffing) < 0 && this.stuffings.length < this.size.maxSize) {
+    if (this.stuffings.indexOf(stuffing) < 0 && this.stuffings.length <= this.size.maxSize) {
         this.stuffings.push(stuffing);
     } else {
         console.log('Нельзя добалять более "+ size.maxSize +" начинок и если такая уже есть!!!');
