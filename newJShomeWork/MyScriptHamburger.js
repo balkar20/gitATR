@@ -1,94 +1,86 @@
 var Hamburger = function () {
-    var hamburger = function (sizeOfHamburger, stuffing) {
-        var size = sizeOfHamburger;
-        var stuffings =[];
-        var toppings = [];
-        var toppingNames = [];
-        var stuffingNames = [];
+    var hamburger = function (size, stuffing) {
+        this.size = size;
+        this.stuffings =[];
+        this.toppings = [];
 
-
-        stuffings.push(stuffing);
-
+        this.stuffings.push(stuffing);
 
         this.addStuffing = function (stuffing) {
-            if (stuffings.indexOf(stuffing) < 0 && stuffings.length < size.maxSize) {
-                stuffings.push(stuffing);
-                stuffingNames.push(stuffing.name);
+            if (this.stuffings.indexOf(stuffing) < 0 && this.stuffings.length < size.maxSize) {
+                this.stuffings.push(stuffing);
             } else {
-                console.log('Нельзя добалять начинку к большому гамбургеру, если такая уже есть, и если уже добавлено 5 начинок!!!');
+                console.log('Нельзя добалять более "+ size.maxSize +" начинок и если такая уже есть!!!');
             }
 
         };
 
         this.addTopping = function (topping) {
-            if (toppings.indexOf(topping) === -1) {
-                toppings.push(topping);
-                toppingNames.push(topping.name)
+            if (this.toppings.indexOf(topping) === -1) {
+                this.toppings.push(topping);
             } else {
-                console.log("Нельзя добавлять более 5 топпингов и нельзя добавлять топпинг если такой уже есть !!!");
+                console.log("Нельзя добавлять топпинг если такой уже есть !!!");
 
             }
         };
 
         this.removeTopping = function (topping) {
-            var index = toppings.indexOf(topping);
-            toppings.splice(index,1);
-            toppingNames.splice(index, 1);
+            var index = this.toppings.indexOf(topping);
+            this.toppings.splice(index, 1);
         };
 
         this.removeStuffing = function (stuffing) {
-            var index = stuffings.indexOf(stuffing);
-            stuffings.splice(index,1);
-            stuffingNames.splice(index, 1);
+            var index = this.stuffings.indexOf(stuffing);
+            this.stuffings.splice(index, 1);
         };
 
         this.getSize = function () {
-
-            return size;
-
+            return this.size.name;
         };
 
         this.getStuffing = function () {
-            return stuffings;
+            return this.stuffings.map(function(elem) {
+                return elem.name;
+            });
         };
 
         this.getTopping = function () {
-            return toppings;
+            return this.toppings.map(function(elem) {
+                return elem.name;
+            });
         };
 
         this.calculateCalories = function () {
-            var result;
-            var sizeCalories = size.calories;
+            var sizeCalories = this.size.calories;
             
-            var toppingCalories = toppings.reduce((a, b) => {
+            var toppingCalories = this.toppings.reduce((a, b) => {
                 return a + b.calories;
-            },0);
-            var stuffingCalories = stuffings.reduce((a, b) => {
+            }, 0);
+            var stuffingCalories = this.stuffings.reduce((a, b) => {
                 return a + b.calories;
             }, 0);
 
 
-            result = toppingCalories + stuffingCalories + sizeCalories;
-            return result;
-
+            return toppingCalories + stuffingCalories + sizeCalories;
+            
         };
 
         this.calculatePrice = function () {
             var result;
-            var priceOfStuffing = stuffings.reduce((a, b) => {
+            var priceOfStuffing = this.stuffings.reduce((a, b) => {
                 return a + b.price;
             }, 0);
-            var priceOfTopping = toppings.reduce((a,b) => {
+            var priceOfTopping = this.toppings.reduce((a,b) => {
                 return a + b.price;
             }, 0);
             result = size.startPrice + (priceOfStuffing + priceOfTopping);
 
             return result;
-        }
+        };
 
 
 
-    }
+    };
     return hamburger;
 }();
 

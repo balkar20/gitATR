@@ -1,121 +1,105 @@
 var Hamburger = function() {
     var hamburger = function(size, stuffing) {
         this.size = size;
-        this.stuffing = [];
-        this.topping = [];
-        this.toppingNames = [];
-        this.stuffingNames = [];
-
-
-        if (stuffing !== null && stuffing !== Hamburger.NO_STUFFING) {
-            this.stuffing.push(stuffing);
+        this.stuffings = [];
+        this.toppings = [];
+        if (stuffing !== undefined) {
+            this.stuffings.push(stuffing);
         }
 
-
-        this.addStuffing = function(stuffing) {
-            if (this.stuffing.indexOf(stuffing) < 0 && this.stuffing.length < 5) {
-                this.stuffing.push(stuffing);
-                this.stuffingNames.push(stuffing.name);
+        this.addStuffing = function (stuffing) {
+            if (this.stuffings.indexOf(stuffing) < 0 && this.stuffings.length < this.size.maxSize) {
+                this.stuffings.push(stuffing);
             } else {
-                console.log('Нельзя добалять начинку к маленькому гамбургеру, если такая уже есть, и если уже добавлено 5 начинок!!!');
+                console.log('Нельзя добалять более "+ size.maxSize +" начинок и если такая уже есть!!!');
             }
 
         };
 
-        this.addTopping = function(topping) {
-            if (this.topping.indexOf(topping) === -1 && this.topping.length <= 5) {
-                this.topping.push(topping);
-                this.toppingNames.push(topping.name)
+        this.addTopping = function (topping) {
+            if (this.toppings.indexOf(topping) === -1) {
+                this.toppings.push(topping);
             } else {
-                console.log("Нельзя добавлять более 5 топпингов и нельзя добавлять топпинг если такой уже есть !!!");
+                console.log("Нельзя добавлять топпинг если такой уже есть !!!");
 
             }
         };
 
-        this.remuveTopping = function(topping) {
-            for (var i = 0; i < this.topping.length; i++) {
-                if (this.topping[i] === topping) {
-                    this.topping.splice(i, 1);
-                    this.toppingNames.splice(i, 1);
-                }
-            }
+        this.removeTopping = function (topping) {
+            var index = this.toppings.indexOf(topping);
+            this.toppings.splice(index, 1);
         };
 
-        this.remuveStuffing = function(stuffing) {
-            for (var i = 0; i < this.stuffing.length; i++) {
-                if (this.stuffing[i] === stuffing) {
-                    this.stuffing.splice(i, 1);
-                    this.stuffingNames.splice(i, 1);
-                }
-            }
+        this.removeStuffing = function (stuffing) {
+            var index = this.stuffings.indexOf(stuffing);
+            this.stuffings.splice(index, 1);
         };
 
-        this.getSize = function() {
+        this.getSize = function () {
+            return this.size.name;
+        };
 
-            return this.size;
+        this.getStuffing = function () {
+            return this.stuffings.map(function(elem) {
+                return elem.name;
+            });
+        };
+
+        this.getTopping = function () {
+            return this.toppings.map(function(elem) {
+                return elem.name;
+            });
+        };
+
+        this.calculateCalories = function () {
+            var sizeCalories = this.size.calories;
+
+            var toppingCalories = this.toppings.reduce((a, b) => {
+                return a + b.calories;
+            }, 0);
+            var stuffingCalories = this.stuffings.reduce((a, b) => {
+                return a + b.calories;
+            }, 0);
+
+
+            return toppingCalories + stuffingCalories + sizeCalories;
 
         };
 
-        this.getStuffing = function() {
-            return this.stuffing;
-        };
-
-        this.getTopping = function() {
-            return this.topping;
-        };
-
-        this.calculateCalories = function() {
+        this.calculatePrice = function () {
             var result;
-            var mainCalories = 200;
-            var k = 33.6;
-            var toppingCalor = k * (this.topping.length / 2);
-            var stuffingCalor = k * this.stuffing.length;
-            result = toppingCalor + stuffingCalor + mainCalories;
-            return result;
-
-        };
-
-        this.calculatePrice = function() {
-            var result;
-            var priceOfStuffing = this.stuffing.length * 0.1;
-            var priceOfTopping = this.topping.length * 0.15;
-
-            result = this.size.startprice + (priceOfStuffing + priceOfTopping);
+            var priceOfStuffing = this.stuffings.reduce((a, b) => {
+                return a + b.price;
+            }, 0);
+            var priceOfTopping = this.toppings.reduce((a, b) => {
+                return a + b.price;
+            }, 0);
+            result = size.startPrice + (priceOfStuffing + priceOfTopping);
 
             return result;
-        }
+        };
 
 
 
-    }
+    };
     return hamburger;
 }();
 
+Hamburger.STUFFING_CHEESE = { name: 'Cheese', calories: 25, price: 0.1 };
+Hamburger.STUFFING_CHICKEN = { name: 'Chicken', calories: 23, price: 0.15 };
+Hamburger.STUFFING_POTATO = { name: 'Potato', calories: 27, price: 0.2 };
+Hamburger.STUFFING_SALAD = { name: 'Salad', calories: 23, price: 0.1 };
+Hamburger.STUFFING_ONION = { name: 'Onion', calories: 23, price: 0.1 };
+Hamburger.STUFFING_PAPRICA = { name: 'Paprica', calories: 28, price: 0.3 };
 
-var Assorty = (function() {
-    Hamburger.STUFFING_CHEESE = { name: 'Cheese', calories: 25, Price: 0.1 };
-    Hamburger.STUFFING_CHICKEN = { name: 'Chicken', calories: 23, Price: 0.15 };
-    Hamburger.STUFFING_POTATO = { name: 'Potato', calories: 27, Price: 0.2 };
-    Hamburger.STUFFING_SALAD = { name: 'Salad', calories: 23, Price: 0.1 };
-    Hamburger.STUFFING_ONION = { name: 'Onion', calories: 23, Price: 0.1 };
-    Hamburger.STUFFING_PAPRICA = { name: 'Paprica', calories: 28, Price: 0.3 };
-    Hamburger.NO_STUFFING = { name: 'No stuffing', calories: 0, Price: 0 };
+Hamburger.TOPPING_MAYO = { name: 'Mayo', calories: 21, price: 0.2 };
+Hamburger.TOPPING_SPICE = { name: 'Spice', calories: 24, price: 0.3 };
+Hamburger.TOPPING_KETCHUP = { name: 'Ketchup', calories: 21, price: 0.1 };
+Hamburger.TOPPING_SOURCREAM = { name: 'sour cream', calories: 22, price: 0.3 };
+Hamburger.TOPPING_TOMATO = { name: 'Tomato', calories: 21, price: 0.2 };
 
-    Hamburger.TOPPING_MAYO = { name: 'Mayo', calories: 21, Price: 0.2 };
-    Hamburger.TOPPING_SPICE = { name: 'Spice', calories: 24, Price: 0.3 };
-    Hamburger.TOPPING_KETCHUP = { name: 'Ketchup', calories: 21, Price: 0.1 };
-    Hamburger.TOPPING_SOURCREAM = { name: 'sour cream', calories: 22, Price: 0.3 };
-    Hamburger.TOPPING_TOMATO = { name: 'Tomato', calories: 21, Price: 0.2 };
-
-    Hamburger.SIZE_SMALL = { name: "Small", maxSize: 5, startprice: 0.7 };
-    Hamburger.SIZE_LARGE = { name: "Large", maxSize: 10, startprice: 1.5 };
-
-})();
-
-
-var SIZES = [Hamburger.SIZE_SMALL, Hamburger.SIZE_LARGE]; //Размеры 
-
-
+Hamburger.SIZE_SMALL = { name: "Small", calories: 200, maxSize: 5, startPrice: 0.7 };
+Hamburger.SIZE_LARGE = { name: "Large", calories: 300, maxSize: 10, startPrice: 1.5 };
 
 // Начинки в ассортименте |
 var STUFFINGS = [Hamburger.STUFFING_CHEESE, Hamburger.STUFFING_CHICKEN, Hamburger.STUFFING_POTATO, Hamburger.STUFFING_SALAD, Hamburger.STUFFING_ONION, Hamburger.STUFFING_PAPRICA];
@@ -149,29 +133,30 @@ var TBODY_STUFFING_TR = TABLE_STUFFING_TBODY_ELS[0].getElementsByTagName('tr');
 var TR_ELEMENT_TOPPING = TBODY_TOPPING_TR[0];
 var TR_ELEMENT_STUFFING = TBODY_STUFFING_TR[0];
 
-hamburger = new Hamburger(Hamburger.SIZE_LARGE, Hamburger.NO_STUFFING);
+var BUTTON_LARGE = document.getElementById("selectLargeSize");
+var BUTTON_SMALL = document.getElementById("selectSmallSize");
 
-//var tablebutton = TBODY_STUFFING_TR[3];
-// var tds = TBODY_STUFFING_TR[0].getElementsByTagName('td');
-// var btntds = tds[3]
-// var btns = btntds.getElementsByTagName('button');
-// var btn = btns[0];
+var BUTTON_BUY_IT = document.getElementsByClassName("btn btn-lg btn-success")[0];
 
-var removeChild = function(e) {
+var hamburger;
+
+function removeChild(e) {
     var tr = e.currentTarget.parentNode.parentNode;
     var thisTbody = tr.parentNode;
     thisTbody.removeChild(tr);
-    var item = tr.childNodes[3];
-    for (var i = 0; i < hamburger.topping.length; i++) {
-        if (hamburger.topping[i].name === item.textContent) {
-            hamburger.remuveTopping(hamburger.topping[i]);
-        }
-    }
-
-    for (var i = 0; i < hamburger.stuffing.length; i++) {
-        if (hamburger.stuffing[i].name === item.textContent) {
-            hamburger.remuveStuffing(hamburger.stuffing[i]);
-        }
+    var itemText = tr.childNodes[3].textContent;
+    if (hamburger.getTopping().indexOf(itemText) > 0) {
+        hamburger.toppings.forEach((elem) => {
+            if (elem.name === itemText) {
+                hamburger.removeTopping(elem);
+            }
+        });
+    } else if (hamburger.getStuffing().indexOf(itemText) > 0) {
+        hamburger.stuffings.forEach((elem) => {
+            if (elem.name === itemText) {
+                hamburger.removeTopping(elem);
+            }
+        });
     }
     setInfo();
     countChange();
@@ -181,7 +166,7 @@ var TR_ELEMENT_TABLE_CLONE;
 var TD;
 var counter = true;
 
-var addClone = function() {
+function addClone() {
     TR_ELEMENT_TABLE_CLONE = TR_ELEMENT_TOPPING.cloneNode(true);
     TD = TR_ELEMENT_TABLE_CLONE.getElementsByTagName('td');
     if (counter === true) {
@@ -196,7 +181,7 @@ var DROPDOWN_MENU = document.getElementsByClassName("dropdown-menu");
 var DROPDOWN_MENU_TOPPING = DROPDOWN_MENU[0];
 var DROPDOWN_MENU_STUFFING = DROPDOWN_MENU[1];
 
-var dropDownClick = function(e) {
+function dropDownClick(e) {
     addElementToTable(e.target);
 
     setInfo();
@@ -205,10 +190,11 @@ var dropDownClick = function(e) {
 };
 
 function addElementToTable(el) {
-    var warnMsg = "Нельзя добавлять более 5 добавок и нельзя добавлять добавку если такая уже есть !!!";
+    var warnMsg = "Нельзя добавлять более 5 добавок к маленькому гамбургеру и более 10 к большому и нельзя добавлять добавку если такая уже есть, так же нельзя тобавлять топпинг если такой уже есть!!!";
     var textContent = el.textContent;
-    var toppingCondition = TOPPING_NAMES.indexOf(textContent) !== -1 && hamburger.toppingNames.indexOf(textContent) === -1;
-    var stuffingCondition = STUFFING_NAMES.indexOf(textContent) !== -1 && hamburger.stuffingNames.indexOf(textContent) === -1;
+    var toppingCondition = TOPPING_NAMES.indexOf(textContent) !== -1 && hamburger.getTopping().indexOf(textContent) === -1;
+    var stuffingCondition = STUFFING_NAMES.indexOf(textContent) !== -1 && hamburger.getStuffing().indexOf(textContent) === -1
+                                                                       && hamburger.stuffings.length <= hamburger.size.maxSize;
     var condition;
     var substances;
     var strSubstannce;
@@ -225,50 +211,47 @@ function addElementToTable(el) {
         substances.forEach((item) => {
             if (stuffingCondition && item.name === textContent) {
                 hamburger.addStuffing(item);
-                TD[0].textContent = hamburger.stuffing.length;
+                TD[0].textContent = hamburger.stuffings.length;
                 TD[1].textContent = item.name;
                 TD[2].textContent = item.Price;
                 TD[3].firstElementChild.addEventListener('click', removeChild, true);
+                strSubstannce[0].appendChild(TR_ELEMENT_TABLE_CLONE);
             } else if (toppingCondition && item.name === textContent) {
                 hamburger.addTopping(item);
-                TD[0].textContent = hamburger.topping.length;
+                TD[0].textContent = hamburger.toppings.length;
                 TD[1].textContent = item.name;
                 TD[2].textContent = item.Price;
                 TD[3].firstElementChild.addEventListener('click', removeChild, true);
+                strSubstannce[0].appendChild(TR_ELEMENT_TABLE_CLONE);
             }
-            strSubstannce[0].appendChild(TR_ELEMENT_TABLE_CLONE);
         });
     } else {
-        alert(warnMsg);
-    }
-
+           alert(warnMsg);
+        }
 }
 
-var buttonLarge = document.getElementById("selectLargeSize");
-var buttonSmall = document.getElementById("selectSmallSize");
-
-var clickMainButtons = function(e) {
+function clickMainButtons(e) {
     document.getElementById('newHamburger').style = 'display: none';
     document.getElementById('hamburgerFilling').style = 'display: inline';
-    if (e.currentTarget === buttonLarge) {
-        hamburger.size = Hamburger.SIZE_LARGE;
-    } else if (e.currentTarget === buttonSmall) {
-        hamburger.size = Hamburger.SIZE_SMALL;
+    if (e.currentTarget === BUTTON_LARGE) {
+        hamburger =new Hamburger(Hamburger.SIZE_LARGE);
+    } else if (e.currentTarget === BUTTON_SMALL) {
+        hamburger = new Hamburger(Hamburger.SIZE_SMALL);
     }
     console.log(hamburger.size.name);
     setInfo();
     countChange();
 };
 
-var setInfo = function() {
+function setInfo() {
     INFO_BLOCK1_DD[0].textContent = hamburger.size.name;
-    INFO_BLOCK1_DD[1].textContent = hamburger.topping.length;
-    INFO_BLOCK1_DD[2].textContent = hamburger.stuffing.length;
+    INFO_BLOCK1_DD[1].textContent = hamburger.toppings.length;
+    INFO_BLOCK1_DD[2].textContent = hamburger.stuffings.length;
     INFO_BLOCK1_DD[3].textContent = hamburger.calculateCalories();
     INFO_BLOCK2_DD[0].textContent = hamburger.calculatePrice();
 };
 
-var setAssortyments = function(asorts) {
+function setAssortyments(asorts) {
     asorts.forEach((el) => {
         setAssortiment(el);
     });
@@ -288,60 +271,48 @@ function setAssortiment(substances) {
     });
 }
 
-
-
-var setTotal = function(price) {
+function setTotal(price) {
     var clone = trElement.cloneNode(true);
     var td = clone.getElementsByTagName('td');
-}
+};
 
-var addEventForButtons = function() {
+function addEventForButtons() {
     var closeButtons = document.getElementsByClassName("btn btn-sm btn-danger");
     for (var i = 0; i < closeButtons.length; i++) {
         closeButtons[i].addEventListener('click', removeChild, true);
     }
 };
 
-var checkTopping = document.getElementById('checkTopping');
-var checkStuffing = document.getElementById('checkStuffing');
-var checkSizePrise = document.getElementById('sizePrise');
-var total = document.getElementById('total');
+var CHECK_TOPPING = document.getElementById('checkTopping');
+var CHECKS_STUFFING = document.getElementById('checkStuffing');
+var CHECK_SIZE_PRISE = document.getElementById('sizePrise');
+var ELEMENTS_OF_TOTALCHECK = (document.getElementById('total')).getElementsByTagName('tr');
 
-var checkToppingels = checkTopping.getElementsByTagName('tr');
-var checkStuffingingels = checkStuffing.getElementsByTagName('tr');
-var checkSizePriseEls = checkSizePrise.getElementsByTagName('tr');
-var totalEls = total.getElementsByTagName('tr');
-
-//чек
-var checkContainer = document.getElementById("checkList");
-
-var OpenCheck = function() {
-    var tr = document.createElement('tr');
-    var tdName = document.createElement('td');
-    var tdPrice = tdName.cloneNode(true);
+function OpenCheck() {
+    var checkContainer = document.getElementById("checkList");
     checkContainer.style = "display: inline";
-    for (var i = 0; i < hamburger.topping.length; i++) {
+    for (var i = 0; i < hamburger.toppings.length; i++) {
         var tr = document.createElement('tr');
         var tdName = document.createElement('td');
         var tdPrice = tdName.cloneNode(true);
-        var el = hamburger.topping[i];
+        var el = hamburger.toppings[i];
         console.log(el.name);
         tdName.textContent = el.name;
         tr.appendChild(tdName);
-        tdPrice.innerHTML = el.Price;
+        tdPrice.textContent = el.price;
         tr.appendChild(tdPrice);
-        checkTopping.appendChild(tr);
+        CHECK_TOPPING.appendChild(tr);
     }
 
-    for (var i = 0; i < hamburger.stuffing.length; i++) {
+    for (var i = 0; i < hamburger.stuffings.length; i++) {
         var trS = document.createElement('tr');
         var tdSName = document.createElement('td');
         var tdSPrice = tdName.cloneNode(true);
-        tdSName.innerHTML = hamburger.stuffing[i].name;
+        tdSName.textContent = hamburger.getStuffing()[i];
         trS.appendChild(tdSName);
-        tdSPrice.innerHTML = hamburger.stuffing[i].Price;
+        tdSPrice.textContent = hamburger.stuffings[i].price;
         trS.appendChild(tdSPrice);
-        checkStuffing.appendChild(trS);
+        CHECKS_STUFFING.appendChild(trS);
     }
     var rowSize = document.createElement('tr');
     var dataSize = document.createElement('td');
@@ -349,47 +320,40 @@ var OpenCheck = function() {
     var rowPrice = rowSize.cloneNode(true);
     var dataPrise = dataSize.cloneNode(true);
 
-    dataSize.textContent = hamburger.size.name;
-    dataPrise.textContent = hamburger.size.startprice;
+    dataSize.textContent = hamburger.getSize();
+    dataPrise.textContent = hamburger.size.startPrice;
 
     rowSize.appendChild(dataSize)
     rowPrice.appendChild(dataPrise);
 
-    checkSizePrise.appendChild(rowSize);
-    checkSizePrise.appendChild(rowPrice);
+    CHECK_SIZE_PRISE.appendChild(rowSize);
+    CHECK_SIZE_PRISE.appendChild(rowPrice);
 
     //---------------------------
 
-    var totalchilds = document.getElementsByClassName("col-xs-4 form-control-static text-center");
-    var TotalChild = totalchilds[0];
-
-    totalEls[0].lastChild.textContent = ': ' + countElement.value;
-    totalEls[1].lastChild.textContent = ': ' + TotalChild.textContent;
+    var TotalChild = document.getElementsByClassName("col-xs-4 form-control-static text-center")[0];
+    ELEMENTS_OF_TOTALCHECK[0].lastChild.textContent = ': ' + COUNT_ELEMENT.value;
+    ELEMENTS_OF_TOTALCHECK[1].lastChild.textContent = ': ' + TotalChild.textContent;
 
 };
 
-var countElement = document.getElementById("count");
-
-var countChange = function() {
-    var count = countElement.value;
+var COUNT_ELEMENT = document.getElementById("count");
+function countChange() {
+    var count = COUNT_ELEMENT.value;
     var price = hamburger.calculatePrice();
-
     var totalEls = document.getElementsByClassName("col-xs-4 form-control-static text-center");
     var TotalEl = totalEls[0];
     TotalEl.textContent = price * count;
-
 };
 
-var buttonBuyItClasses = document.getElementsByClassName("btn btn-lg btn-success");
-var buttonBuyIt = buttonBuyItClasses[0];
-
-countElement.onchange = countChange;
-buttonBuyIt.onclick = OpenCheck;
+COUNT_ELEMENT.onchange = countChange;
+BUTTON_BUY_IT.onclick = OpenCheck;
 DROPDOWN_MENU_TOPPING.onclick = dropDownClick;
 DROPDOWN_MENU_STUFFING.onclick = dropDownClick;
-//window.onload = setAssortyments();
 window.onload = setAssortyments([TOPPINGS, STUFFINGS]);
 window.addEventListener('load', addEventForButtons, true);
 window.addEventListener('load', addClone, true);
-buttonLarge.onclick = clickMainButtons;
-buttonSmall.onclick = clickMainButtons;
+BUTTON_LARGE.onclick = clickMainButtons;
+BUTTON_SMALL.onclick = clickMainButtons;
+
+document.addEventListener("DOMContentLoaded", redy);
