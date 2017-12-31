@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     console.log('Нельзя добалять более "+ size.maxSize +" начинок и если такая уже есть!!!');
                 }
-
             };
+
 
             this.addTopping = function (topping) {
                 if (this.toppings.indexOf(topping) === -1) {
@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
     ///////сайт
     var hamburger;
 
+    var CONTAINER = document.getElementsByClassName("container")[0];
     //Информационный блок
     var INFO_BLOCKS_ELS = document.getElementsByClassName("dl-horizontal");
     var INFO_BLOCK1_DD = INFO_BLOCKS_ELS[0].getElementsByTagName("dd");
@@ -197,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function addElementToTable(substName) {
         var warnMsg = "Нельзя добавлять более 5 добавок к маленькому гамбургеру и более 10 к большому и нельзя добавлять добавку если такая уже есть, так же нельзя тобавлять топпинг если такой уже есть!!!";
-        // var textContent = el.textContent;
         var toppingCondition = TOPPING_NAMES.indexOf(substName) !== -1 && hamburger.getTopping().indexOf(substName) === -1;
         var stuffingCondition = STUFFING_NAMES.indexOf(substName) !== -1 && hamburger.getStuffing().indexOf(substName) === -1 &&
             hamburger.stuffings.length <= hamburger.size.maxSize;
@@ -268,7 +268,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function setAssortiment(substances) {
         substances.forEach((el) => {
-            console.log(el);
             var child = document.createElement("li");
             child.innerHTML = "<a href=\"#\">" + el.name + "</a>";
             child.firstChild.setAttribute("data-asort", "asort");
@@ -285,61 +284,44 @@ document.addEventListener("DOMContentLoaded", function() {
         var clone = trElement.cloneNode(true);
         var td = clone.getElementsByTagName('td');
     }
+    var CHECK_CONTAINER = document.getElementById("checkList");
+    var CHECK_CONTAINER_CLONE = CHECK_CONTAINER.cloneNode(true);
 
     var CHECK_TOPPING = document.getElementById('checkTopping');
     var CHECKS_STUFFING = document.getElementById('checkStuffing');
-    var CHECK_SIZE_PRISE = document.getElementById('sizePrise');
     var ELEMENTS_OF_TOTALCHECK = (document.getElementById('total')).getElementsByTagName('tr');
 
     function OpenCheck() {
-        var checkContainer = document.getElementById("checkList");
-        if(checkContainer.style === "display: inline"){
-            clearCheck();
+        if(CHECK_CONTAINER.getAttribute("wasOpened")){
+              clearCheck();
         }else{
-            checkContainer.style = "display: inline";
+            CHECK_CONTAINER.style = "display: inline";
+            CHECK_CONTAINER.setAttribute("wasOpened", "yes");
         }
 
         for (var i = 0; i < hamburger.toppings.length; i++) {
-            var tr = document.createElement('tr');
-            var tdName = document.createElement('td');
-            var tdPrice = tdName.cloneNode(true);
+            var trTopping = document.createElement('tr');
+            var tdToppingName = document.createElement('td');
+            var tdToppingPrice = tdToppingName.cloneNode(true);
             var el = hamburger.toppings[i];
-            console.log(el.name);
-            tdName.textContent = el.name;
-            tr.appendChild(tdName);
-            tdPrice.textContent = el.price;
-            tr.appendChild(tdPrice);
-            CHECK_TOPPING.appendChild(tr);
+            tdToppingName.textContent = el.name;
+            trTopping.appendChild(tdToppingName);
+            tdToppingPrice.textContent = el.price;
+            trTopping.appendChild(tdToppingPrice);
+            CHECK_TOPPING.appendChild(trTopping);
         }
 
         for (var i = 0; i < hamburger.stuffings.length; i++) {
             var trStuffing = document.createElement('tr');
             var tdStuffingName = document.createElement('td');
-            var tdStuffingPrice = tdName.cloneNode(true);
+            var tdStuffingPrice = tdStuffingName.cloneNode(true);
             tdStuffingName.textContent = hamburger.getStuffing()[i];
             trStuffing.appendChild(tdStuffingName);
             tdStuffingPrice.textContent = hamburger.stuffings[i].price;
             trStuffing.appendChild(tdStuffingPrice);
             CHECKS_STUFFING.appendChild(trStuffing);
         }
-        var rowSize = document.createElement('tr');
-        var dataSize = document.createElement('td');
 
-        var rowPrice = rowSize.cloneNode(true);
-        var dataPrise = dataSize.cloneNode(true);
-
-        dataSize.textContent = hamburger.getSize();
-        dataPrise.textContent = hamburger.size.startPrice;
-
-        rowSize.appendChild(dataSize)
-        rowPrice.appendChild(dataPrise);
-
-        CHECK_SIZE_PRISE.appendChild(rowSize);
-        CHECK_SIZE_PRISE.appendChild(rowPrice);
-
-        //---------------------------
-
-        document.getElementsByClassName("col-xs-4 form-control-static text-center")[0];
         var countChild = ELEMENTS_OF_TOTALCHECK[0].getElementsByTagName("td")[1];
         var totalChild = ELEMENTS_OF_TOTALCHECK[1].getElementsByTagName("td")[1];
         countChild.innerText = ': ' + COUNT_ELEMENT.value;
@@ -349,15 +331,14 @@ document.addEventListener("DOMContentLoaded", function() {
     function clearCheck() {
         removePartsOfMainCheck(CHECK_TOPPING);
         removePartsOfMainCheck(CHECKS_STUFFING);
-        removePartsOfMainCheck(CHECK_SIZE_PRISE);
         removePartsOfTotalCheck();
 
     }
     function removePartsOfMainCheck(tbody) {
-        for(var i = 0;i < tbody.children.length;i++){
-            if(i !== 0){
-                tbody.remove(tbody.children[i]);
-            }
+        var trEls = tbody.getElementsByTagName("tr");
+        var len = trEls.length;
+        while(trEls.length >1){
+            tbody.removeChild(tbody.lastChild);
         }
     }
     function removePartsOfTotalCheck() {
@@ -384,6 +365,4 @@ document.addEventListener("DOMContentLoaded", function() {
     MAIN_BUTTONS_PANEL.onclick = clickMainButtons;
     addClone();
     setAssortyments([TOPPINGS, STUFFINGS]);
-
-    
 });
