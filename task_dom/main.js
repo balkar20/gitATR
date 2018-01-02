@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var container = document.getElementById('tree');
     //buildHtmlHirarchy(OBJS, "ROOT", container);
-    generateTree(OBJS, "ROOT", container);
+    //generateTree(OBJS, "ROOT", container);
     //container.appendChild(root);
     // var drawed = drawNodeForElement(OBJS[60]);
     //container.appendChild(drawed);
-
+    buildHirarchy(OBJS, "ROOT", container);
 
     // var results = buildHirarchy(OBJS, "ROOT");
     // console.log(results);
@@ -65,23 +65,36 @@ var Resurse = function(name, type, size, location) {
 
 
 function buildHtmlHirarchy(resourses, rootName, container) {
+    var isRoot = rootName === "ROOT";
+    if (isRoot) {
+        var spanHead = document.createElement("span");
+        spanHead.className = "header";
+        spanHead.innerText = "ROOT";
+        container.appendChild(spanHead);
+        //container = drawNodeForElement(rootName);
+    }
     var box = document.createElement("div");
-    var filtred = resourses.filter(function(res) {
-        return res.location === rootName;
-    });
-    var newResourses = deleteObjectsFromArray(resourses, filtred);
-    console.log("filtred: ");
-    console.log(filtred);
-    console.log(rootName);
+    var filtred = resourses.filter((el) => {
+        return el.location === rootName;
+});
+    var updatedResourses = deleteObjectsFromArray(resourses, filtred);
     if (filtred.length === 0) {
-        return container;
+        // return container;
     } else {
-        filtred.forEach((res) => {
-            container = container.appendChild(drawNodeForElement(res));
-            container = container.appendChild(buildHtmlHirarchy(newResourses, res.name, container.getElementsByTagName('li')[0]));
+        var childResContainer;
+        filtred.forEach(function (el) {
+            var childResContainer;
+            if (isRoot ) {
+                //container.appendChild(drawNodeForElement(rootName));
+                childResContainer = container.appendChild(drawNodeForElement(el));
+                buildHtmlHierarchy(updatedResourses, el.name, childResContainer);
+            } else {
+                childResContainer = container.lastElementChild.firstElementChild.appendChild(drawNodeForElement(el));
+                buildHtmlHierarchy(updatedResourses, el.name, childResContainer);
+            }
+
         });
     }
-    return container;
 }
 function finale(resourses, rootName){
     var container;
@@ -136,7 +149,7 @@ function drawNodeForElement(resourse) {
     connectorLine.setAttribute("class", CLASS_CONNECTOR_LINE);
 
     var header = document.createElement("span");
-    if (resourse != "ROOT") {
+    // if (resourse != "ROOT") {
         if (resourse.type === TYPES.file) {
             header.className = CLASS_FILE_HEADER;
             var wrappedSpan = document.createElement("span");
@@ -155,11 +168,11 @@ function drawNodeForElement(resourse) {
         ulElemennt.appendChild(liElement);
         container.appendChild(hirLineContainer);
         container.appendChild(ulElemennt);
-    } else {
-        header.className = CLASS_DIRECT_HEADER;
-        header.textContent = resourse;
-        container.appendChild(header);
-    }
+    // } else {
+    //     header.className = CLASS_DIRECT_HEADER;
+    //     header.textContent = resourse;
+    //     container.appendChild(header);
+    // }
 
     return container;
 }
