@@ -12,6 +12,7 @@
 //         DROPDOWN_MENU_STUFFING.appendChild(child);
 //     }
 // };
+var torin;
 var Hamburger = function() {
     var hamburger = function(size, stuffing) {
         this.size = size;
